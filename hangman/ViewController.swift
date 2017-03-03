@@ -22,34 +22,34 @@ class ViewController: UIViewController {
         ["Auta", "Motory"]
     ]
     
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    func numberOfComponentsInPickerView(_ pickerView: UIPickerView) -> Int {
         return 2
     }
     
     
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         if(component == 0){
             return group.count
         }else{
-            return categories[pickerView.selectedRowInComponent(0)].count
+            return categories[pickerView.selectedRow(inComponent: 0)].count
         }
     }
     
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String! {
         
-        print("l:", component, pickerView.selectedRowInComponent(0))
+        print("l:", component, pickerView.selectedRow(inComponent: 0))
         if(component == 0){
             print("grp",group[row])
             return group[row]
         }else{
-            print("kat",categories[pickerView.selectedRowInComponent(0)][row])
-           return categories[pickerView.selectedRowInComponent(0)][row]
+            print("kat",categories[pickerView.selectedRow(inComponent: 0)][row])
+           return categories[pickerView.selectedRow(inComponent: 0)][row]
         }
     }
     
     
-    func pickerView(pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
+    func pickerView(_ pickerView: UIPickerView!, didSelectRow row: Int, inComponent component: Int)
     {
         if(component == 0){
             selectedGroup = row
@@ -77,8 +77,8 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let dest = segue.destinationViewController as! GameViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let dest = segue.destination as! GameViewController
         dest.selectedGroup = group[selectedGroup]
         dest.selectedCategory = categories[selectedGroup][selectedCategory]
     }

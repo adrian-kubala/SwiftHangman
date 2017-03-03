@@ -41,15 +41,14 @@ class GameViewController : UIViewController {
             "group": self.selectedGroup,
             "category": self.selectedCategory
         ]
-        
-        Alamofire.request(.GET, "http://machina123.ddns.net:8080/dstepinski/hangman.php", parameters: parameters).responseString { response in
-            self.riddleWord = response.result.value!.uppercaseString
-            self.prepareGame()
-        }
+      Alamofire.request("http://machina123.ddns.net:8080/dstepinski/hangman.php", method: .get, parameters: parameters, encoding: URLEncoding.httpBody, headers: nil).responseString { (response) in
+        self.riddleWord = response.result.value!.uppercased()
+        self.prepareGame()
+      }
     }
     
     func prepareGame() -> Void {
-        discoverdWord = [String](count: riddleWord.characters.count, repeatedValue: "_");
+        discoverdWord = [String](repeating: "_", count: riddleWord.characters.count);
         refreshGameField()
     }
     
@@ -57,33 +56,34 @@ class GameViewController : UIViewController {
         lblGameField.text! = ""
         lblUsedLetters.text! = "Wykorzystane: "
         
-        for var i = 0; i < discoverdWord!.count; i++  {
+        for i in 0 ..< discoverdWord!.count {
             lblGameField.text! += discoverdWord![i] + " "
         }
         
-        for var j = 0; j < usedLetters.count; j++ {
+        for j in 0 ..< usedLetters.count {
             lblUsedLetters.text! += usedLetters[j] + ", "
         }
     }
     
-    @IBAction func gameProgress(sender: AnyObject) {
-        checkLetter(inputLetter.text!.uppercaseString)
+    @IBAction func gameProgress(_ sender: AnyObject) {
+        checkLetter(inputLetter.text!.uppercased())
     }
     
     func advanceLoss() -> Void {
-        let imageCover : UIImageView? = self.view!.viewWithTag(currentCoverTag++) as? UIImageView
-        imageCover!.hidden = true;
+      currentCoverTag += 1
+        let imageCover : UIImageView? = self.view!.viewWithTag(currentCoverTag) as? UIImageView
+        imageCover!.isHidden = true;
         if(currentCoverTag > 1005) {
-            let alertController = UIAlertController(title: "Koniec gry!", message: "Koniec gry, zostałeś powieszony na szubienicy, koksie! Sorry M8", preferredStyle: .Alert)
-            let alertActon = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: alertHandler)
+            let alertController = UIAlertController(title: "Koniec gry!", message: "Koniec gry, zostałeś powieszony na szubienicy, koksie! Sorry M8", preferredStyle: .alert)
+            let alertActon = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: alertHandler)
             
             alertController.addAction(alertActon)
             
-            self.presentViewController(alertController, animated: true, completion:nil)
+            self.present(alertController, animated: true, completion:nil)
         }
     }
     
-    func checkLetter(letter : String) -> Void {
+    func checkLetter(_ letter : String) -> Void {
         var checkedLetter : String;
         var discoveries : Int = 0;
         
@@ -104,11 +104,11 @@ class GameViewController : UIViewController {
         
         usedLetters.append(checkedLetter);
         
-        for var i = 0; i < riddleWord.characters.count; i++ {
-            let currentIndex = riddleWord.startIndex.advancedBy(i)
-            if(String(riddleWord.uppercaseString[currentIndex]) == checkedLetter) {
-                discoveredLetters++
-                discoveries++
+        for i in 0 ..< riddleWord.characters.count {
+            let currentIndex = riddleWord.characters.index(riddleWord.startIndex, offsetBy: i)
+            if(String(riddleWord.uppercased()[currentIndex]) == checkedLetter) {
+                discoveredLetters += 1
+                discoveries += 1
                 discoverdWord![i] = checkedLetter
             }
 
@@ -120,18 +120,18 @@ class GameViewController : UIViewController {
         refreshGameField()
         
         if(discoveredLetters == riddleWord.characters.count) {
-            let alertController = UIAlertController(title: "Wygrana!", message: "Koniec gry, wszystie litery odkryte", preferredStyle: .Alert)
-            let alertActon = UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: alertHandler)
+            let alertController = UIAlertController(title: "Wygrana!", message: "Koniec gry, wszystie litery odkryte", preferredStyle: .alert)
+            let alertActon = UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: alertHandler)
             
             alertController.addAction(alertActon)
             
-            self.presentViewController(alertController, animated: true, completion:nil)
+            self.present(alertController, animated: true, completion:nil)
         }
         
         
     }
     
-    func alertHandler(alert: UIAlertAction!) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func alertHandler(_ alert: UIAlertAction!) {
+        self.dismiss(animated: true, completion: nil)
     }
 }
