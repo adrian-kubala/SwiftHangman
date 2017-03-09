@@ -41,7 +41,7 @@ class GameViewController : UIViewController {
             "group": self.selectedGroup,
             "category": self.selectedCategory
         ]
-      Alamofire.request("http://machina123.ddns.net:8080/dstepinski/hangman.php", method: .get, parameters: parameters, encoding: URLEncoding.httpBody, headers: nil).responseString { (response) in
+      Alamofire.request("http://hayuna.pl/hangman.php", method: .get, parameters: parameters, encoding: URLEncoding.default, headers: nil).responseString { (response) in
         self.riddleWord = response.result.value!.uppercased()
         self.prepareGame()
       }
